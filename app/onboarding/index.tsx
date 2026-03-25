@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Slide } from "../../components/onboarding/SlideIllustration";
+import { Button } from "../../components/ui/Button";
+import { TextButton } from "../../components/ui/TextButton";
 import { SLIDES, THEME } from "../../constants/onboarding";
 import { useOnboarding } from "../../hooks/useOnboarding";
 
@@ -40,20 +42,11 @@ export default function Onboarding() {
           <Settings size={20} color={C.muted} strokeWidth={2} />
         </Pressable>
         {!isLast && (
-          <Pressable
+          <TextButton
+            label="Skip"
             onPress={() => router.replace("/(auth)/login")}
-            style={styles.skipBtn}
-          >
-            <Text
-              style={[
-                styles.skipText,
-                { color: C.muted },
-                fontsLoaded && { fontFamily: "KulimPark_400Regular" },
-              ]}
-            >
-              Skip
-            </Text>
-          </Pressable>
+            size="sm"
+          />
         )}
       </View>
 
@@ -96,21 +89,14 @@ export default function Onboarding() {
             );
           })}
         </View>
-        <Pressable
-          style={[styles.ctaBtn, { backgroundColor: C.accent }]}
+
+        <Button
+          label={isLast ? "Get Started" : "Next"}
           onPress={handleNext}
-        >
-          <Text
-            style={[
-              styles.ctaText,
-              { color: C.invert },
-              fontsLoaded && { fontFamily: "Unbounded_700Bold" },
-            ]}
-          >
-            {isLast ? "Get Started" : "Next"}
-          </Text>
-          <ArrowRight size={16} color={C.invert} strokeWidth={3} />
-        </Pressable>
+          variant="primary"
+          size="md"
+          iconRight={<ArrowRight size={16} color="#FFFFFF" strokeWidth={3} />}
+        />
       </View>
 
       <Modal transparent visible={menuVisible} animationType="fade">
@@ -202,8 +188,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
   },
-  skipBtn: { paddingVertical: 8 },
-  skipText: { fontSize: 14 },
   bottomBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -213,14 +197,6 @@ const styles = StyleSheet.create({
   },
   dotsRow: { flexDirection: "row", gap: 8 },
   dot: { width: 6, height: 6, borderRadius: 3 },
-  ctaBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 52,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-  },
-  ctaText: { fontSize: 14, marginRight: 8 },
   modalOverlay: {
     flex: 1,
     justifyContent: "center",
