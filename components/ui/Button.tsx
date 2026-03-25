@@ -1,12 +1,14 @@
+import React from "react";
 import {
   ActivityIndicator,
   Pressable,
   StyleSheet,
   Text,
   View,
+  ViewStyle,
 } from "react-native";
 
-// ─── Palette (shared) ─────────────────────────────────────────────────────────
+// ─── Palette ─────────────────────────────────────────────────────────
 const C = {
   navy: "#0B1120",
   navyLight: "#111827",
@@ -26,15 +28,14 @@ interface ButtonProps {
   size?: ButtonSize;
   loading?: boolean;
   disabled?: boolean;
-  /** Optional Lucide-style icon component placed before the label */
   iconLeft?: React.ReactNode;
-  /** Optional Lucide-style icon component placed after the label */
   iconRight?: React.ReactNode;
   fullWidth?: boolean;
+
+  style?: ViewStyle; // ✅ FIX ADDED
 }
 
-// ─── Size tokens ──────────────────────────────────────────────────────────────
-// Min touch target: 48px (Apple HIG / Material). lg = 56px for hero CTAs.
+// ─── Sizes ───────────────────────────────────────────────────────────
 const SIZE = {
   sm: {
     height: 40,
@@ -69,11 +70,11 @@ export function Button({
   iconLeft,
   iconRight,
   fullWidth = false,
+  style, // ✅ FIX ADDED
 }: ButtonProps) {
   const s = SIZE[size];
   const isDisabled = disabled || loading;
 
-  // ─── Variant-based styles ─────────────────────────────────────────────────
   const containerVariant =
     variant === "primary"
       ? styles.containerPrimary
@@ -99,6 +100,7 @@ export function Button({
           ...(fullWidth && { alignSelf: "stretch" }),
           opacity: pressed ? 0.8 : isDisabled ? 0.45 : 1,
         },
+        style, // ✅ THIS FIXES YOUR ERROR
       ]}
     >
       {loading ? (
@@ -109,9 +111,11 @@ export function Button({
       ) : (
         <>
           {iconLeft && <View style={styles.icon}>{iconLeft}</View>}
+
           <Text style={[styles.label, labelVariant, { fontSize: s.fontSize }]}>
             {label}
           </Text>
+
           {iconRight && <View style={styles.icon}>{iconRight}</View>}
         </>
       )}
@@ -119,7 +123,7 @@ export function Button({
   );
 }
 
-// ─── Ghost text-only button (for Skip / secondary actions) ───────────────────
+// ─── Optional Text Button ─────────────────────────────────────────────
 interface TextButtonProps {
   label: string;
   onPress: () => void;
@@ -128,6 +132,7 @@ interface TextButtonProps {
 
 export function TextButton({ label, onPress, size = "md" }: TextButtonProps) {
   const s = SIZE[size];
+
   return (
     <Pressable
       onPress={onPress}
@@ -148,7 +153,7 @@ export function TextButton({ label, onPress, size = "md" }: TextButtonProps) {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// ─── Styles ──────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   base: {
     flexDirection: "row",
@@ -156,7 +161,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Variants
   containerPrimary: {
     backgroundColor: C.orange,
     shadowColor: C.orange,
@@ -165,11 +169,13 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
   },
+
   containerOutline: {
     backgroundColor: "transparent",
     borderWidth: 1.5,
     borderColor: C.orange,
   },
+
   containerGhost: {
     backgroundColor: C.navyLight,
     borderWidth: 1,
@@ -180,9 +186,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.4,
   },
+
   labelPrimary: {
     color: C.white,
   },
+
   labelMuted: {
     color: C.whiteDim,
   },
@@ -192,12 +200,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  // Text button
   textBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
+
   textBtnLabel: {
     color: C.whiteDim,
     fontWeight: "500",
